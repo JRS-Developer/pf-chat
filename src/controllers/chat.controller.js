@@ -6,7 +6,7 @@ const getChats = async (req, res, next) => {
         
         const chat = await Chat.find().sort('-create').limit(10)
 
-        chat ? res.json(chat) : res.status(500).json({
+        chat ? res.json(chat) : res.status(400).json({
             msg: "Doesn't exist any chat from this School"
         })
           
@@ -27,7 +27,7 @@ const getChatById = async (req, res, next) => {
                 materia_id: materia_id
             })
 
-            chat ? res.json(chat) : res.status(500).json({
+            chat ? res.json(chat) : res.status(400).json({
                 msg: "Doesn't exist a chat from this materia"
             })
         
@@ -52,7 +52,7 @@ const createChat = async (req, res, next) => {
         });
 
         const chatSaved = await newChat.save((err, data) => {
-            if(err) return res.status(500).json(err)
+            if(err) return res.status(400).json(err)
 
             return data
         });
@@ -70,7 +70,7 @@ const upDateChat = async (req, res, next) => {
         const {description, materia_id} = req.body;
 
 
-        if(!chat_id) return res.status(500).json({ msg: "Please put a valid chat_id"})
+        if(!chat_id) return res.status(400).json({ msg: "Please put a valid chat_id"})
 
         const chat = await Chat.findOneAndUpdate({_id: chat_id},{ '$set': {
 

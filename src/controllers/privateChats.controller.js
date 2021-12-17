@@ -69,7 +69,7 @@ const createPChat = async (req, res, next) => {
         })
 
 
-        if(validate) return res.status(500).json({ msg: `this private conversation already exist with this id: ${validate._id}`})
+        if(validate) return res.status(400).json({ msg: `this private conversation already exist with this id: ${validate._id}`})
 
         const chatSaved = await newP.save();
             
