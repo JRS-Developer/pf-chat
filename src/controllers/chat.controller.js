@@ -1,23 +1,42 @@
 const Chat = require('../models/Chat')
 
-export const get_chats = async (req, res, next) => {
+const getChats = async (req, res, next) => {
 
     try{
-        const {materia_id} = req.params
+        
+        
+        
+        const chat = await Chat.find().sort('-create').limit(10)
 
-        const chat = await Chat.find({
-            materia_id: materia_id
-        });
-
-        res.json(chat)
-
+        res.json(chat);
+          
     } catch (error){
         next(error)
     };
 
 };
 
-export const create_chat = async (req, res, next) => {
+const getChatById = async (req, res, next) => {
+
+    try{
+        
+        const {materia_id} = req.params
+
+        if(materia_id){
+            const chat = await Chat.findOne({
+                materia_id: materia_id
+            })
+            res.json(chat)
+        }
+          
+    } catch (error){
+        next(error)
+    };
+
+};
+
+
+const createChat = async (req, res, next) => {
     try{
 
         const {description, materia_id} = req.body
@@ -29,32 +48,37 @@ export const create_chat = async (req, res, next) => {
 
         });
 
-        const savedChat = await newChat.save((error)=>{
-            if(error) throw error 
-        });
+        const chatSaved = await newChat.save();
 
-        res.json(savedChat);
+        res.json(chatSaved)
+        
     } catch(error){
         next(error);
     };
 };
-
-export const upDate_chat = async (req, res, next) => {
+const upDateChat = async (req, res, next) => {
     try{
 
-        const {description, materia_id} = req.body
+        const {chat_id} = req.params;
+        const {description, materia_id} = req.body;
 
-        const newChat = Chat.upDate({
+        const chat = await Chat.findByIdAndUpdate(chat_id,{
 
-        description,
-        materia_id,
+        description: description,
+        materia_id: materia_id,
 
         });
 
-        const savedChat = await newChat.save();
+        res.json(chat)
 
-        res.json(savedChat);
     } catch(error){
         next(error);
     };
 };
+
+module.exports = {
+    getChats,
+    getChatById,
+    createChat,
+    upDateChat,
+}
