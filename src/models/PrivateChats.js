@@ -3,8 +3,8 @@ const { Schema, model } = mongoose
 
 const PrivateChatsSchema = new Schema({
   members: {
-      type: Object,
-      require: true
+      type: Array,
+      required: true,
   }
 })
 

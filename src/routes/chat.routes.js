@@ -6,6 +6,6 @@ const { getChats, createChat, upDateChat, getChatById} = require('../controllers
 router.get('/', getChats);
 router.get('/:materia_id', getChatById);
 router.post('/', createChat);
-router.put('/:id', upDateChat);
+router.put('/:chat_id', upDateChat);
 
 module.exports = router

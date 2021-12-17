@@ -4,11 +4,11 @@ const getChats = async (req, res, next) => {
 
     try{
         
-        
-        
         const chat = await Chat.find().sort('-create').limit(10)
 
-        res.json(chat);
+        chat ? res.json(chat) : res.status(500).json({
+            msg: "Doesn't exist any chat from this School"
+        })
           
     } catch (error){
         next(error)
@@ -22,12 +22,15 @@ const getChatById = async (req, res, next) => {
         
         const {materia_id} = req.params
 
-        if(materia_id){
+     
             const chat = await Chat.findOne({
                 materia_id: materia_id
             })
-            res.json(chat)
-        }
+
+            chat ? res.json(chat) : res.status(500).json({
+                msg: "Doesn't exist a chat from this materia"
+            })
+        
           
     } catch (error){
         next(error)
@@ -48,12 +51,16 @@ const createChat = async (req, res, next) => {
 
         });
 
-        const chatSaved = await newChat.save();
+        const chatSaved = await newChat.save((err, data) => {
+            if(err) return res.status(500).json(err)
 
-        res.json(chatSaved)
+            return data
+        });
+
+        res.json(chatSaved) 
         
     } catch(error){
-        next(error);
+        next(error)
     };
 };
 const upDateChat = async (req, res, next) => {
@@ -62,12 +69,16 @@ const upDateChat = async (req, res, next) => {
         const {chat_id} = req.params;
         const {description, materia_id} = req.body;
 
-        const chat = await Chat.findByIdAndUpdate(chat_id,{
 
-        description: description,
-        materia_id: materia_id,
+        if(!chat_id) return res.status(500).json({ msg: "Please put a valid chat_id"})
 
-        });
+        const chat = await Chat.findOneAndUpdate({_id: chat_id},{ '$set': {
+
+                description: description,
+                materia_id: materia_id,
+
+            }, 
+        },{upsert: true});
 
         res.json(chat)
 

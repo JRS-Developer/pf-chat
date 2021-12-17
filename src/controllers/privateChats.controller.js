@@ -1,12 +1,14 @@
 const PrivateChats = require('../models/PrivateChats')
 
-const getPChatsBySender = async (req, res, next) => {
+const getPChatsByUser = async (req, res, next) => {
 
     try{
         const { sender_id } = req.params
 
         const chat = await PrivateChats.find({
-            sender_id
+            members: {
+                $in: [sender_id]
+            }
         }).sort('-create').limit(20)
 
         res.json(chat);
@@ -23,9 +25,11 @@ const getPChatsByMembers = async (req, res, next) => {
         
         const { sender_id, receiver_id} = req.params
 
-        const chat = await PrivateChats.find({
-                sender_id,
-                receiver_id
+       
+            const chat = await PrivateChats.find({
+                members: {
+                    $in: [sender_id, receiver_id]
+                }
             });
         
         res.json(chat);
@@ -44,14 +48,31 @@ const createPChat = async (req, res, next) => {
 
        
         const newP = new PrivateChats({
-            members: {
-                sender_id,
-                receiver_id
-            }
+            members: [sender_id, receiver_id]
         });
 
-        const chatSaved = await newP.save();
+        const validate = await PrivateChats.findOne({
+            
+            $or: [
+                {
+                    members: {
+                        $in: [sender_id]
+                    }
+                }, 
+                {
+                    members: {
+                        $in: [receiver_id]
+                    }
+                }
+            ]
+            
+        })
 
+
+        if(validate) return res.status(500).json({ msg: `this private conversation already exist with this id: ${validate._id}`})
+
+        const chatSaved = await newP.save();
+            
         res.json(chatSaved);
         
     } catch(error){
@@ -61,7 +82,7 @@ const createPChat = async (req, res, next) => {
 
 
 module.exports = {
-    getPChatsBySender,
+    getPChatsByUser,
     getPChatsByMembers,
     createPChat,
 }

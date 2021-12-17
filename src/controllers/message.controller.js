@@ -9,7 +9,7 @@ const get_msgByChat = async (req, res, next) => {
                 chat_id
             });
         
-            res.json(msgs);
+            (msgs.length !== 0) ? res.json(msgs) : res.status(500).json({ msg: "Doesn't exist any messages from this chat, maybe the chat_id doesn't correct"})
 
     } catch(error){
         next(error);
@@ -34,7 +34,11 @@ const createMsg = async (req, res, next) => {
             parent_id
         })
 
-        const newMsg = await msg.save();
+        const newMsg = await msg.save((err, data) => {
+            if(err) return res.status(500).json(err)
+
+            return data
+        });
 
         res.json(newMsg);
     

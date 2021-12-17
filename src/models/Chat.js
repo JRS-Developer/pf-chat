@@ -7,7 +7,8 @@ const ChatSchema = new Schema({
   },
   materia_id: {
     type: String,
-    required: true
+    required: true,
+    unique: true,
   }
 })
 
