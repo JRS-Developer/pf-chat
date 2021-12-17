@@ -2,8 +2,13 @@ const mongoose = require('mongoose')
 const { Schema, model } = mongoose
 
 const ChatSchema = new Schema({
-  description: String,
-  materia_id: String,
+  description: {
+    type: String,
+  },
+  materia_id: {
+    type: String,
+    required: true
+  }
 })
 
 module.exports = model('Chat', ChatSchema)
