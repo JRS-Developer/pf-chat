@@ -1,4 +1,3 @@
-const {port_io} = require('../lib/config');
 const config = require('../lib/config')
 //traemos express para poder usarlo
 const express = require('express');
@@ -20,7 +19,5 @@ io.on('connection', () => {
     console.log('usuario conectado')
 })
 
-//dejamos escuchando el server en un puerto especifico
-server.listen(port_io, async () => {
-    console.log(`The server is running on port ${port_io}`)
-  })
+module.exports = server
+
