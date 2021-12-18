@@ -45,33 +45,16 @@ const createPChat = async (req, res, next) => {
     try{
 
         const {sender_id, receiver_id} = req.body
-
-       
+ 
         const newP = new PrivateChats({
             members: [sender_id, receiver_id]
         });
 
-        const validate = await PrivateChats.findOne({
-            
-            $or: [
-                {
-                    members: {
-                        $in: [sender_id]
-                    }
-                }, 
-                {
-                    members: {
-                        $in: [receiver_id]
-                    }
-                }
-            ]
-            
-        })
+        const chatSaved = await newP.save((err, data) => {
+            if(err) return res.status(400).json(err);
 
-
-        if(validate) return res.status(400).json({ msg: `this private conversation already exist with this id: ${validate._id}`})
-
-        const chatSaved = await newP.save();
+            return data
+        });
             
         res.json(chatSaved);
         

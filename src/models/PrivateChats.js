@@ -1,17 +1,25 @@
-const mongoose = require('mongoose')
-const { Schema, model } = mongoose
+const mongoose = require('mongoose');
+const { Schema, model } = mongoose;
+const unique = require('mongoose-unique-validator');
 
 const PrivateChatsSchema = new Schema({
 
   members: {
-      type: Array,
+      type:[{
+        type: String,
+        unique: true,
+        required: true
+      }],
       required: [true, "members are required"],
-      length: {
-        $lt: 2
-      },
-      // maxlength: [2, "A private chat just can have 2 characters"],
-      // minlength: [2, "A private chat just can have 2 characters"],
-  }
+      validate: [arrayLimit, 'members exceeds the limit of 2 on private chat'],
+      unique: true,
+    }
 })
+
+PrivateChatsSchema.plugin(unique);
+
+const arrayLimit = (val) => {
+  return val.length <= 2;
+}
 
 module.exports = model('PrivateChats', PrivateChatsSchema)
