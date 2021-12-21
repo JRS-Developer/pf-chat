@@ -34,13 +34,11 @@ const createMsg = async (req, res, next) => {
             parent_id
         })
 
-        const newMsg = await msg.save((err, data) => {
+        await msg.save((err, data) => {
             if(err) return res.status(400).json(err)
 
-            return data
+            return res.json({msg: "message succesfully created"})
         });
-
-        res.json(newMsg);
     
     } catch(error){
         next(error);

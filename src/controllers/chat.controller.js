@@ -4,9 +4,9 @@ const getChats = async (req, res, next) => {
 
     try{
         
-        const chat = await Chat.find().sort('-create').limit(10)
+        const chat = await Chat.find().sort('-create').limit(20)
 
-        chat ? res.json(chat) : res.status(400).json({
+        chat.length > 0 ? res.json(chat) : res.status(400).json({
             msg: "Doesn't exist any chat from this School"
         })
           
@@ -51,13 +51,13 @@ const createChat = async (req, res, next) => {
 
         });
 
-        const chatSaved = await newChat.save((err, data) => {
+        await newChat.save((err, data) => {
             if(err) return res.status(400).json(err)
 
-            return data
+            return res.json({msg: "chat succesfully created"}) 
         });
 
-        res.json(chatSaved) 
+        
         
     } catch(error){
         next(error)
@@ -80,7 +80,7 @@ const upDateChat = async (req, res, next) => {
             }, 
         },{upsert: true});
 
-        res.json(chat)
+       chat ? res.json({msg: "chat succesfully modified"}) : res.status(400).json({ msg: "Doesn't exist any chat with that id"})
 
     } catch(error){
         next(error);
