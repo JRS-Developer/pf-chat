@@ -21,6 +21,9 @@ const MessageSchema = new Schema({
     type: Schema.Types.ObjectId, 
     ref: 'Message'
   },
+  likes: {
+    type: Object,   
+  }
 
 })
 

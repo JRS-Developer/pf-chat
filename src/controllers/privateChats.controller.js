@@ -50,13 +50,11 @@ const createPChat = async (req, res, next) => {
             members: [sender_id, receiver_id]
         });
 
-        const chatSaved = await newP.save((err, data) => {
+        await newP.save((err, data) => {
             if(err) return res.status(400).json(err);
 
-            return data
+            return res.json({msg: "message succesfully created"})
         });
-            
-        res.json(chatSaved);
         
     } catch(error){
         next(error);

@@ -8,18 +8,17 @@ const PrivateChatsSchema = new Schema({
       type:[{
         type: String,
         unique: true,
-        required: true
       }],
       required: [true, "members are required"],
-      validate: [arrayLimit, 'members exceeds the limit of 2 on private chat'],
+      validate: [arrayLimit, 'members must be exactly 2 users'],
       unique: true,
     }
 })
 
 PrivateChatsSchema.plugin(unique);
 
-const arrayLimit = (val) => {
-  return val.length <= 2;
+function arrayLimit (val) {
+  return val.length === 2;
 }
 
 module.exports = model('PrivateChats', PrivateChatsSchema)

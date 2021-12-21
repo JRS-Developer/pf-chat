@@ -9,6 +9,11 @@ const MateriaSchema = new Schema({
     required: [true, "materia_id is required"],
     unique: true,
   },
+  class_id: { 
+    type: String,  
+    required: [true, "class_id is required"],
+    unique: true,
+  },
   name:  {
     type: String,
     required: [true, "name is required"],

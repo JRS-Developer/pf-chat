@@ -10,7 +10,12 @@ const UserSchema = new Schema({
     unique: true,
   },
   chat_id: {
-    type: Array,
+    type: [{
+      type: Schema.Types.ObjectId,
+      unique: true
+    }],
+    required: [true, "chat_id is required"],
+    validate: [arrayLimit, 'users have to belong to minimun 1 chat'],
   },
   username: {
     type: String,
@@ -25,9 +30,10 @@ const UserSchema = new Schema({
     minlength: [10, "fullname must containt minimum 10 characters"],
     unique: true,
   },
-  description: {
+  rol_id: {
     type: String,
-    maxlength: [100, "description mustn't exceed 100 characters"],
+    required: [true, "rol_id is required"],
+    unique: true,
   },
   avatar: {
       type: String,
@@ -42,5 +48,9 @@ UserSchema.path('avatar').validate((val) => {
     if(urlRegex.test(path));
 
 }, 'Invalid URL.');
+
+function arrayLimit(val) {
+  return val.length > 0;
+}
 
 module.exports = model('User', UserSchema);
