@@ -9,7 +9,7 @@ const MessageSchema = new Schema({
     required: [true, "chat_id is required"],
   },
   user_id: {
-    type: String,
+    type: Schema.Types.ObjectId,
     required: [true, "user_id is required"],
   },
   message:  {

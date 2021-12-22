@@ -1,4 +1,5 @@
-const Chat = require('../models/Chat')
+const Chat = require('../models/Chat');
+const Materia = require('../models/Materia');
 
 const getChats = async (req, res, next) => {
 
@@ -20,12 +21,16 @@ const getChatById = async (req, res, next) => {
 
     try{
         
-        const {materia_id} = req.params
+        const {materia_id, class_id} = req.params
 
-     
-            const chat = await Chat.findOne({
+            const materia = await Materia.findOne({
                 materia_id: materia_id
-            })
+            });
+
+            const chat = await Chat.findOne({
+                materia_id: materia._id,
+                class_id: class_id
+            });
 
             chat ? res.json(chat) : res.status(400).json({
                 msg: "Doesn't exist a chat from this materia"
@@ -33,7 +38,7 @@ const getChatById = async (req, res, next) => {
         
           
     } catch (error){
-        next(error)
+        next(error);
     };
 
 };
