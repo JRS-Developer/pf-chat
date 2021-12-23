@@ -51,8 +51,8 @@ const getById = async (req, res, next) => {
         
         const {id} = req.params;
 
-        const user = await User.findOne({
-            _id: id
+        const user = await User.findById({
+            user_id: id
         });
 
         user ? res.json(user) : res.status(400).json({ msg: "There isn't any user with that id"});

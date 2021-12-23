@@ -1,5 +1,6 @@
 const Message = require('../models/Message');
 const Chat = require('../models/Chat');
+const User = require('../models/User');
 
 const get_msgByChat = async (req, res, next) => {
     try{
@@ -22,24 +23,37 @@ const createMsg = async (req, res, next) => {
     try{
         const {
             chat_id, 
-            user_id, 
+            user, 
             message, 
             parent_id
         } = req.body
 
         const msg = new Message({
             chat_id, 
-            user_id, 
+            user, 
             message, 
             parent_id
         })
 
+        await Message.aggregate(
+                {
+                    $lookup:
+                    {
+                       from: User,
+                       localfield: user,
+                       foreignField: _id,
+                       as: sender
+                    }
+                }
+        )
+        
         await msg.save((err, data) => {
             if(err) return res.status(400).json(err)
 
             return res.json({msg: "message succesfully created"})
         });
-    
+        
+
     } catch(error){
         next(error);
     };

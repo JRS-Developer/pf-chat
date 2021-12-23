@@ -2,24 +2,22 @@ const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
 const unique = require('mongoose-unique-validator');
 
-const MateriaSchema = new Schema(
+const ClaseSchema = new Schema(
   {
-    materia_idP: {
+    Class_idP: {
       type: String,
-      required: [true, 'materia_id is required'],
+      required: [true, 'class_id is required'],
       unique: true,
     },
-    class_id: {
+    school_id: {
       type: Schema.Types.ObjectId,
-      ref: 'Clases',
+      ref: 'School',
       required: [true, 'class_id is required'],
       unique: true,
     },
     name: {
-      type: String,
-      required: [true, 'name is required'],
-      maxlength: [50, "name mustn't exceed 100 characters"],
-      minlength: [10, 'name must have to containt 10 minimun characters'],
+      Type: String,
+      required: [true, 'clase name is required'],
     },
     description: {
       type: String,
@@ -31,6 +29,6 @@ const MateriaSchema = new Schema(
   }
 );
 
-MateriaSchema.plugin(unique)
+ChatSchema.plugin(unique);
 
-module.exports = model('Materia', MateriaSchema)
+module.exports = model('Clases', ClaseSchema);
