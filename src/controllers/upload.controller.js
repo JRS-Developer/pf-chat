@@ -18,8 +18,18 @@ const uploadFile = (req, res, next) => {
     };  
 };
 
+const deleteFile = async (req, res, next) => {
+
+    try{
+       
+
+    } catch(error){
+        next(error);
+    };
+};
 
 module.exports = {
     getFiles,
-    uploadFile
+    uploadFile,
+    deleteFile
 }

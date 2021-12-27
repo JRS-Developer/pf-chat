@@ -15,7 +15,18 @@ const io = sockect(server, {
   }});
 
 //inicializamos socket.io
-io.on('connection', () => {
+io.on('connection', (socket) => {
+    socket.on('conectado', (user) => {
+
+    })
+    
+    socket.on('typing', (data) => {
+
+    })
+
+    socket.on('message', (data) => {
+
+    })
     console.log('usuario conectado')
 })
 

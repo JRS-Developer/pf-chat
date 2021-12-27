@@ -4,9 +4,9 @@ const unique = require('mongoose-unique-validator');
 
 const RoleSchema = new Schema(
   {
-    role_idP: {
+    role: {
       type: String,
-      required: [true, 'class_id is required'],
+      required: [true, 'role_id is required'],
       unique: true,
     },
     name: {
@@ -24,6 +24,14 @@ const RoleSchema = new Schema(
   }
 );
 
-ChatSchema.plugin(unique);
+RoleSchema.plugin(unique);
+
+// RoleSchema.virtual('id').get(() => {
+//   return this._id.toHexString()
+// });
+
+// RoleSchema.set('toJSON', {
+//   virtuals: true
+// });
 
 module.exports = model('Roles', RoleSchema);

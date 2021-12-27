@@ -1,13 +1,12 @@
 const Message = require('../models/Message');
-const Chat = require('../models/Chat');
 const User = require('../models/User');
 
 const get_msgByChat = async (req, res, next) => {
     try{
-            const {chat_id} = req.params
+            const {chat} = req.params
 
             const msgs = await Message.find({
-                chat_id
+                chat
             });
         
             (msgs.length !== 0) ? res.json(msgs) : res.status(400).json({ msg: "Doesn't exist any messages from this chat, maybe the chat_id doesn't correct"})
@@ -22,20 +21,21 @@ const createMsg = async (req, res, next) => {
 
     try{
         const {
-            chat_id, 
+            chat, 
             user, 
             message, 
-            parent_id
+            parent
         } = req.body
 
         const msg = new Message({
-            chat_id, 
+            chat, 
             user, 
             message, 
-            parent_id
+            parent
         })
 
         await Message.aggregate(
+            
                 {
                     $lookup:
                     {
@@ -44,7 +44,8 @@ const createMsg = async (req, res, next) => {
                        foreignField: _id,
                        as: sender
                     }
-                }
+                }      
+            
         )
         
         await msg.save((err, data) => {
@@ -59,7 +60,57 @@ const createMsg = async (req, res, next) => {
     };
 };
 
+const updateMessage = async (req, res, next) => {
+    try {
+        
+        const { id } = req.params
+        const { 
+            chat, 
+            user, 
+            message, 
+            parent 
+        } = req.body;
+
+        if(!id) return res.status(400).json({ msg: "Please put a valid role_id"});
+
+        const MessageFind = await Message.findOneAndUpdate({id:id},{ '$set': {
+
+            chat, 
+            user, 
+            message, 
+            parent 
+
+        }, 
+        },{upsert: true});
+
+        MessageFind ? res.json({ msg: "message succesfully updated"}): res.status(400).json({ msg: "Please put a valid message id"});
+
+    } catch (error) {
+        next(error);
+    };
+};
+
+const deleteMessage = async (req, res, next) => {
+
+    try{
+        const {id} = req.params
+
+        await Message.deleteOne({
+            id: id
+        }, (err) => {
+            if(err) return res.status(400).json({msg: "doesn't exist any message with this id"})
+
+            return res.json({msg: "message has been eliminated"})
+        });
+
+    } catch(error){
+        next(error);
+    };
+};
+
 module.exports = {
     get_msgByChat,
     createMsg,
+    updateMessage,
+    deleteMessage
 }

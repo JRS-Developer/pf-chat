@@ -2,11 +2,11 @@ const User = require('../models/User');
 
 const get_users = async (req, res, next) => {
     try{
-            const {chat_id, name} = req.query
+            const {chat, name} = req.query
 
-            if(chat_id && name){
+            if(chat && name){
                 const user = await User.find({
-                    chat_id
+                    chat
                 });
                 const filtered = user.filter(user => {
                     return user.username.includes(name) || user.fullname.includes(name)
@@ -14,9 +14,9 @@ const get_users = async (req, res, next) => {
                 return res.json(filtered);
             };
 
-            if(chat_id){
+            if(chat){
                 const user = await User.find({
-                    chat_id
+                    chat: chat
                 });
                 return res.json(user)
             };
@@ -37,7 +37,7 @@ const get_users = async (req, res, next) => {
                 return res.json(user);
             };
 
-            const user = User.find();
+            const user = await User.find();
 
             res.json(user);
 
@@ -52,7 +52,7 @@ const getById = async (req, res, next) => {
         const {id} = req.params;
 
         const user = await User.findById({
-            user_id: id
+            user: id
         });
 
         user ? res.json(user) : res.status(400).json({ msg: "There isn't any user with that id"});
@@ -67,24 +67,24 @@ const createUser = async (req, res, next) => {
 
     try{
         const {
-            chat_id, 
-            user_id, 
-            rol_id, 
+            user, 
+            rol, 
+            email,
             username,
             fullname,
             avatar
         } = req.body
 
-        const user = new User({
-            chat_id, 
-            user_id, 
-            rol_id, 
+        const newUser = new User({
+            user, 
+            rol,
+            email, 
             username,
             fullname,
             avatar
         })
 
-       await user.save((err, data) => {
+       await newUser.save((err, data) => {
             if(err) return res.status(400).json(err)
 
             return res.json({msg: "user succesfully created"})
@@ -100,10 +100,10 @@ const updateUser = async (req, res, next) => {
     try {
         
         const { id } = req.params
-        const {
-            chat_id, 
-            user_id, 
-            rol_id, 
+        const { 
+            user, 
+            rol, 
+            email,
             username,
             fullname,
             avatar
@@ -111,21 +111,36 @@ const updateUser = async (req, res, next) => {
 
         if(!id) return res.status(400).json({ msg: "Please put a valid user_id"});
 
-        const user = await Chat.findOneAndUpdate({_id: chat_id},{ '$set': {
+        const userFind = await User.UpdateOne({_id: id}, {
 
-            chat_id, 
-            user_id, 
-            rol_id, 
+            user, 
+            rol, 
             username,
             fullname,
+            email,
             avatar
 
-        }, 
-        },{upsert: true});
+        }, {upsert: true});
 
-        user ? res.json({ msg: "user succesfully created"}): res.status(400).json({ msg: "Please put a valid user_id"});
+        userFind ? res.json({ msg: "user succesfully created"}): res.status(400).json({ msg: "Please put a valid user_id"});
 
     } catch (error) {
+        next(error);
+    };
+};
+
+const deleteUser = async (req, res, next) => {
+
+    try{
+        const {id} = req.params
+
+        const del = await User.deleteOne({
+            _id: id
+        }
+        );
+        
+        del.deletedCount > 0 ? res.json({msg: "user has been deleted"}) : res.status(400).json({msg: "doesn't exist any user with this id"})
+    } catch(error){
         next(error);
     };
 };
@@ -134,5 +149,6 @@ module.exports = {
     get_users,
     getById,
     createUser,
-    updateUser
+    updateUser,
+    deleteUser
 }

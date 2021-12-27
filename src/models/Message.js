@@ -3,9 +3,9 @@ const { Schema, model } = mongoose
 
 const MessageSchema = new Schema(
   {
-    chat_id: {
+    chat: {
       type: Schema.Types.ObjectId,
-      ref: ['Chat', 'PrivateChat'],
+      ref: 'Chat',
       required: [true, 'chat_id is required'],
     },
     user: {
@@ -18,7 +18,7 @@ const MessageSchema = new Schema(
       required: [true, 'message is required'],
       maxlength: [100, "fullname mustn't exceed 100 characters"],
     },
-    parent_id: {
+    parent: {
       type: Schema.Types.ObjectId,
       ref: 'Message',
     },
@@ -32,5 +32,12 @@ const MessageSchema = new Schema(
   }
 );
 
+// MessageSchema.virtual('id').get(() => {
+//   return this._id.toHexString()
+// });
+
+// MessageSchema.set('toJSON', {
+//   virtuals: true
+// });
 
 module.exports = model('Message', MessageSchema)

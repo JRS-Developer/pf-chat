@@ -24,7 +24,15 @@ const PrivateChatsSchema = new Schema({
 PrivateChatsSchema.plugin(unique);
 
 function arrayLimit (val) {
-  return val.length === 2;
+  return val.length >= 2;
 };
+
+// PrivateChatsSchema.virtual('id').get(() => {
+//   return this._id.toHexString()
+// });
+
+// PrivateChatsSchema.set('toJSON', {
+//   virtuals: true
+// });
 
 module.exports = model('PrivateChats', PrivateChatsSchema)

@@ -8,11 +8,22 @@ const ChatSchema = new Schema(
       type: String,
       maxlength: [100, "description mustn't exceed 100 characters"],
     },
-    materia_id: {
-      type: Schema.Types.ObjectId,
-      ref: 'Materia',
-      required: [true, 'materia_id is required'],
-      unique: true,
+    clase: {
+      type: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Materia',
+        },
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Clase',
+        },
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'School',
+        }
+      ],
+      validate: [arrayLimit, 'chat have to have school, clase and materia id'] 
     },
     participants: {
       type: [
@@ -30,5 +41,17 @@ const ChatSchema = new Schema(
 );
 
 ChatSchema.plugin(unique);
+
+function arrayLimit (val) {
+  return val.length === 3;
+};
+
+// ChatSchema.virtual('id').get(() => {
+//   return this._id.toString()
+// });
+
+// ChatSchema.set('toJSON', {
+//   virtuals: true
+// });
 
 module.exports = model('Chat', ChatSchema);

@@ -4,28 +4,23 @@ const unique = require('mongoose-unique-validator');
 
 const UserSchema = new Schema(
   {
-    user_idP: {
+    user: {
       type: String,
       required: [true, 'user_id is required'],
       unique: true,
     },
-    chat_id: {
-      type: [
-        {
-          type: Schema.Types.ObjectId,
-          ref: ['Chat', 'PrivateChat'],
-          unique: true,
-        },
-      ],
-      required: [true, 'chat_id is required'],
-      validate: [arrayLimit, 'users have to belong to minimun 1 chat'],
-    },
     username: {
       type: String,
       required: [true, 'username is required'],
-      match: [/.+\@.+\..+/, 'please put a valid username format'],
       unique: true,
     },
+    email: {
+      type: String,
+      match: [/.+\@.+\..+/, 'please put a valid username format'],
+      required: [true, 'email is required'],
+      unique: true
+    }
+    ,
     fullname: {
       type: String,
       required: [true, 'fullname is required'],
@@ -33,11 +28,10 @@ const UserSchema = new Schema(
       minlength: [10, 'fullname must containt minimum 10 characters'],
       unique: true,
     },
-    rol_id: {
+    rol: {
       type: Schema.Types.ObjectId,
       ref: 'Roles',
-      required: [true, 'rol_id is required'],
-      unique: true,
+      required: [true, 'rol_id is required']
     },
     avatar: {
       type: String,
@@ -59,6 +53,14 @@ UserSchema.path('avatar').validate((val) => {
 
 function arrayLimit(val) {
   return val.length > 0;
-}
+};
+
+// UserSchema.virtual('id').get(() => {
+//   return this._id.toHexString()
+// });
+
+// UserSchema.set('toJSON', {
+//   virtuals: true
+// });
 
 module.exports = model('User', UserSchema);

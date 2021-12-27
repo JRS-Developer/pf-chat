@@ -1,23 +1,26 @@
-const mongoose = require('mongoose');
-const { Schema, model } = mongoose;
-const unique = require('mongoose-unique-validator');
+const mongoose = require('mongoose')
+const { Schema, model } = mongoose
 
 const ClaseSchema = new Schema(
   {
-    Class_idP: {
+    clase: {
       type: String,
       required: [true, 'class_id is required'],
-      unique: true,
     },
-    school_id: {
-      type: Schema.Types.ObjectId,
-      ref: 'School',
-      required: [true, 'class_id is required'],
-      unique: true,
+    school: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'School',
+          required: [true, 'school_id is required'],
+        },
+      ],
     },
-    name: {
-      Type: String,
-      required: [true, 'clase name is required'],
+    nombre: {
+      type: String,
+      required: [true, 'nombre is required'],
+      maxlength: [50, "nombre mustn't exceed 100 characters"],
+      minlength: [5, 'nombre must have to containt 10 minimun characters'],
     },
     description: {
       type: String,
@@ -27,8 +30,14 @@ const ClaseSchema = new Schema(
   {
     versionKey: false,
   }
-);
+)
 
-ChatSchema.plugin(unique);
+// ClaseSchema.virtual('id').get(() => {
+//   return this._id.toHexString()
+// });
 
-module.exports = model('Clases', ClaseSchema);
+// ClaseSchema.set('toJSON', {
+//   virtuals: true
+// });
+
+module.exports = model('Clases', ClaseSchema)
