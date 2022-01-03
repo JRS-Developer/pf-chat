@@ -37,6 +37,10 @@ const UserSchema = new Schema(
       type: String,
       maxlength: [100, "avatar mustn't exceed 100 characters"],
     },
+    state: {
+      type: Boolean,
+      default: false
+    },
   },
   {
     versionKey: false,

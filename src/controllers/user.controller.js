@@ -51,7 +51,7 @@ const getById = async (req, res, next) => {
         
         const {id} = req.params;
 
-        const user = await User.findById({
+        const user = await User.findOne({
             user: id
         });
 

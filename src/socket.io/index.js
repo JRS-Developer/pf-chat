@@ -21,7 +21,7 @@ io.on('connection', (socket) => {
     })
     
     socket.on('typing', (data) => {
-
+      io.broadcast.emit('typing', `${data.fullname} is typing...`)
     })
 
     socket.on('message', (data) => {
