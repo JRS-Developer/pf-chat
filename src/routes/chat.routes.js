@@ -4,7 +4,7 @@ const { getChats, createChat, upDateChat, getChatById} = require('../controllers
 
 
 router.get('/', getChats);
-router.get('/:materia_id', getChatById);
+router.get('/:materia_id/:class_id', getChatById);
 router.post('/', createChat);
 router.put('/:chat_id', upDateChat);
 
