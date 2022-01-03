@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
-const unique = require('mongoose-unique-validator');
+// const unique = require('mongoose-unique-validator');
 
 const MateriaSchema = new Schema(
   {

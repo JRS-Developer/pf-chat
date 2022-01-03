@@ -7,8 +7,8 @@ const http = require('http');
 const server = http.createServer(app);
 
 //conectamos el server con la webSocket
-const sockect = require('socket.io');
-const io = sockect(server, {
+const socket = require('socket.io');
+const io = socket(server, {
     cors: {
     origin: config.cors,
     methods: ["GET", "POST"]

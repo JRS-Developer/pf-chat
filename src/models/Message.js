@@ -16,7 +16,6 @@ const MessageSchema = new Schema(
     message: {
       type: Object,
       required: [true, 'message is required'],
-      maxlength: [100, "fullname mustn't exceed 100 characters"],
     },
     parent: {
       type: Schema.Types.ObjectId,
