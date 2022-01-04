@@ -4,6 +4,8 @@ const cors = require('cors')
 const helmet = require('helmet')
 const routes = require('./routes')
 const config = require('./lib/config')
+const error = require('./middlewares/handleError')
+const notFound = require('./middlewares/notFound')
 
 const app = express()
 
@@ -16,7 +18,8 @@ app.use(
   })
 )
 app.use(helmet())
-
 app.use('/api', routes)
+app.use(notFound);
+app.use(error);
 
 module.exports = app

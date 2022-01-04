@@ -1,20 +1,19 @@
-const mongoose = require('mongoose');
-const { Schema, model } = mongoose;
-//const unique = require('mongoose-unique-validator');
+const mongoose = require('mongoose')
+const { Schema, model } = mongoose
 
-const MateriaSchema = new Schema(
+const ClaseSchema = new Schema(
   {
-    materia: {
-      type: String,
-      required: [true, 'materia_id is required'],
-      unique: true,
-    },
     clase: {
+      type: String,
+      required: [true, 'class_id is required'],
+    },
+    school: {
       type: [
         {
           type: Schema.Types.ObjectId,
-          ref: 'Clases',
-        }
+          ref: 'School',
+          required: [true, 'school_id is required'],
+        },
       ],
     },
     nombre: {
@@ -31,19 +30,14 @@ const MateriaSchema = new Schema(
   {
     versionKey: false,
   }
-);
+)
 
-// MateriaSchema.plugin(unique);
-
-// MateriaSchema.virtual('id').get(() => {
+// ClaseSchema.virtual('id').get(() => {
 //   return this._id.toHexString()
 // });
 
-// MateriaSchema.set('toJSON', {
+// ClaseSchema.set('toJSON', {
 //   virtuals: true
 // });
 
-// function arrayLimit (val) {
-//   return val.length >= 1;
-// };
-module.exports = model('Materia', MateriaSchema)
+module.exports = model('Clases', ClaseSchema)

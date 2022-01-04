@@ -4,11 +4,15 @@ const {
     getPChatsByUser,
     getPChatsByMembers,
     createPChat,
+    updatePChat,
+    deletePChat
 } = require('../controllers/privateChats.controller');
 
-router.get('/:sender_id', getPChatsByUser)
-router.get('/:sender_id/:receiver_id', getPChatsByMembers)
+router.get('/:sender', getPChatsByUser)
+router.get('/:sender/:receiver', getPChatsByMembers)
 router.post('/', createPChat)
+router.put('/:id', updatePChat)
+router.delete('/:id', deletePChat)
 
 
 module.exports = router

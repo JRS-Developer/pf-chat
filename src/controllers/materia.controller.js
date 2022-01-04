@@ -4,19 +4,22 @@ const getMaterias = async (req, res, next) => {
 
     try{
         
-        const { class_id } = req.query;
+        const { clase } = req.query;
 
-        if(class_id){
+        if(clase){
 
             const materia = await Materia.find({
-                class_id
+                clase
             });
 
             materia.length > 0 ? res.json(chat) : res.status(400).json({
             msg: "Doesn't exist any materia with this class_id"
             });
         };
+
+        const materia = await Materia.find();
         
+        res.json(materia);
           
     } catch (error){
         next(error);
@@ -28,11 +31,11 @@ const getMateriaById = async (req, res, next) => {
 
     try{
         
-            const {materia_id} = req.params;
+            const {id} = req.params;
 
      
             const materia = await Materia.findOne({
-                materia_id: materia_id
+                materia: id
             });
 
             materia ? res.json(materia) : res.status(400).json({
@@ -49,13 +52,13 @@ const getMateriaById = async (req, res, next) => {
 const createMateria = async (req, res, next) => {
     try{
 
-        const {name, class_id, description, materia_id} = req.body
+        const {nombre, clase, description, materia} = req.body
 
         const newMateria = new Materia({
 
-            materia_id,
-            class_id,
-            name,
+            materia,
+            clase,
+            nombre,
             description,
 
         });
@@ -77,23 +80,42 @@ const updateMateria = async (req, res, next) => {
     try{
 
         const {id} = req.params;
-        const {name, class_id, description, materia_id} = req.body;
+        const {nombre, clase, description, materia} = req.body;
 
 
         if(!id) return res.status(400).json({ msg: "Please put a valid materia id"})
 
-        const materia = await Materia.findOneAndUpdate({_id: id},{ '$set': {
+        const materiaFind = await Materia.updateOne({_id: id},{
 
-            materia_id: materia_id,
-            class_id: class_id,
-            name: name,
-            description: description,
+            $push: {
+                clase: {
+                    $each: clase
+                },
+            },
+            materia,
+            nombre,
+            description,
 
-            }, 
-        },{upsert: true});
+            }, {upsert: true});
 
-       materia ? res.json({msg: "materia succesfully modified"}) : res.status(400).json({ msg: "Doesn't exist any materia with that id"})
+       materiaFind ? res.json({msg: "materia succesfully modified"}) : res.status(400).json({ msg: "Doesn't exist any materia with that id"})
 
+    } catch(error){
+        next(error);
+    };
+};
+
+const deleteMateria = async (req, res, next) => {
+
+    try{
+        
+        const {id} = req.params
+
+        const del = await Materia.deleteOne({
+            _id: id
+        });
+
+        del.deletedCount > 0 ? res.json({msg: "materia succesfully deleted"}) : res.status(400).json({msg: "doesn't exist any materia with this id"})
     } catch(error){
         next(error);
     };
@@ -104,4 +126,5 @@ module.exports = {
     getMateriaById,
     createMateria,
     updateMateria,
+    deleteMateria
 }

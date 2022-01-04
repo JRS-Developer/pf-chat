@@ -16,12 +16,19 @@ const io = socket(server, {
 
 //inicializamos socket.io
 io.on('connection', (socket) => {
-  
-  socket.on('conectado', () => {
-    console.log(`usuario conectado`);
-  });
+    socket.on('conectado', (user) => {
+
+    })
     
-});
+    socket.on('typing', (data) => {
+      io.broadcast.emit('typing', `${data.fullname} is typing...`)
+    })
+
+    socket.on('message', (data) => {
+
+    })
+    console.log('usuario conectado')
+})
 
 module.exports = server
 

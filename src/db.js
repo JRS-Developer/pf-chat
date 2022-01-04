@@ -2,13 +2,20 @@ const mongoose = require('mongoose')
 const { dbURI } = require('./lib/config')
 
 const connect = async () => {
-  try {
-    await mongoose.connect(dbURI)
-    console.log('DB connected! :D')
-  } catch (error) {
-    console.error(error)
-  }
-}
+
+  mongoose.connect(dbURI,{
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      dbName: 'gaia'
+    })
+    .then(() => {
+      console.log('DB connected! :D');
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+
+};
 
 module.exports = {
   connect
