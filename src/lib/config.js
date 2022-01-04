@@ -8,7 +8,8 @@ const config = {
   port: process.env.API_PORT || '8080',
   port_io: process.env.IO_PORT || '80',
   host: process.env.API_HOST || 'localhost',
-  dbURI: process.env.DB_URI
+  cors: process.env.CORS || 'http://localhost:3000',
+  dbURI: process.env.DB_URI,
 }
 
 module.exports = config
