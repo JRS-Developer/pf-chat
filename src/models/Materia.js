@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
-// const unique = require('mongoose-unique-validator');
+//const unique = require('mongoose-unique-validator');
 
 const MateriaSchema = new Schema(
   {
@@ -33,7 +33,7 @@ const MateriaSchema = new Schema(
   }
 );
 
-MateriaSchema.plugin(unique);
+// MateriaSchema.plugin(unique);
 
 // MateriaSchema.virtual('id').get(() => {
 //   return this._id.toHexString()
