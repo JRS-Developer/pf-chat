@@ -1,7 +1,27 @@
-const Chat = require('../models/Chat');
-const Materia = require('../models/Materia');
-const Clase = require('../models/Clases');
-const User = require('../models/User');
+const Chat = require('../models/Chat')
+// const Materia = require('../models/Materia')
+// const Clase = require('../models/Clases')
+// const User = require('../models/User')
+const Joi = require('joi')
+
+const getChatByclaseSchema = Joi.object({
+  materia_id: Joi.string().uuid().required(),
+  clase_id: Joi.string().uuid().required(),
+  school_id: Joi.string().uuid().required(),
+  ciclo_lectivo_id: Joi.string().uuid().required(),
+})
+
+const createChatSchema = Joi.object({
+  description: Joi.string().required(),
+  clase: Joi.array().items(Joi.string().uuid()).required(),
+  // participants: Joi.array().required(),
+})
+
+const updateChatSchema = Joi.object({
+  description: Joi.string().allow(''),
+  // clase: Joi.array().items(Joi.string().uuid()), // WARN: No deberia dejar actualizar la clase
+  // participants: Joi.array().required(),
+})
 
 const getChats = async (req, res, next) => {
   try {
@@ -19,32 +39,20 @@ const getChats = async (req, res, next) => {
 
 const getChatByclase = async (req, res, next) => {
   try {
-    const { materia, clase, id } = req.params
+    const { materia_id, clase_id, school_id, ciclo_lectivo_id } = req.query
 
-    const materia_id = await Materia.findOne({
-        materia
-    });
-    console.log(materia_id)
-    const clase_id = await Clase.findOne({
-        clase
-    });
-    console.log(clase_id)
-    const user_id = await User.findOne({
-        user: id
-    })
-    console.log(user_id)
-    const chat = await Chat.findOne({
-         $and: [
-          {
-            clase: {
-              $all: [materia_id._id, clase_id._id],
-            }
-          },
-          {
-            participants: user_id._id
-          }
-        ] 
-    })
+    const { error } = getChatByclaseSchema.validate(req.params)
+
+    if (error) return res.status(400).json({ msg: error.details[0].message })
+
+    // Uno los params en un array clase para buscar en el modelo
+    const clase = [materia_id, clase_id, school_id, ciclo_lectivo_id]
+
+    let query = {
+      clase: { $all: clase },
+    }
+
+    const chat = await Chat.findOne(query)
     console.log(chat)
     chat
       ? res.json(chat)
@@ -52,21 +60,22 @@ const getChatByclase = async (req, res, next) => {
           msg: "Doesn't exist a chat from this materia",
         })
   } catch (error) {
-    next(error);
-  };
-};
+    next(error)
+  }
+}
 
 const createChat = async (req, res, next) => {
   try {
-    const { description, clase, participants } = req.body
+    const { description, clase /* , participants */ } = req.body
+    const data = { description, clase /* , participants */ }
 
-    const newChat = new Chat({
-      description,
-      clase: clase,
-      participants: participants
-    })
+    const { error } = createChatSchema.validate(data)
 
-    await newChat.save((err, data) => {
+    if (error) return res.status(400).json({ msg: error.details[0].message })
+
+    const newChat = new Chat(data)
+
+    newChat.save((err) => {
       if (err) return res.status(400).json(err)
 
       return res.json({ msg: 'chat succesfully created' })
@@ -79,21 +88,26 @@ const createChat = async (req, res, next) => {
 const upDateChat = async (req, res, next) => {
   try {
     const { id } = req.params
-    const { description, clase, participants } = req.body
+    // WARN: No se deberia actualizar la clase, solo el description
+    const { description /*  clase */ /* , participants */ } = req.body
 
-    if (!id) return res.status(400).json({ msg: 'Please put a valid chat_id' })
+    const data = { description /* , clase */ /* , participants */ }
+
+    const { error } = updateChatSchema.validate(data)
+
+    if (error) return res.status(400).json({ msg: error.details[0].message })
 
     const chatFind = await Chat.findOneAndUpdate(
       { _id: id },
-      { '$set':
-        {
+      {
+        $set: {
           description: description,
-          clase:  clase,
-          participants: participants
+          // clase: clase,
+          // participants: participants,
         },
       },
       { upsert: true }
-    );
+    )
 
     chatFind
       ? res.json({ msg: 'chat succesfully modified' })
@@ -108,19 +122,17 @@ const updateParticipants = async (req, res, next) => {
     const { id } = req.params
     const { participants } = req.body
 
-    if (!id) return res.status(400).json({ msg: 'Please put a valid chat_id' })
-
     const chatFind = await Chat.findOneAndUpdate(
       { _id: id },
-      { 
+      {
         $push: {
           participants: {
-            $each: participants
-          }
-        }
+            $each: participants,
+          },
+        },
       },
       { upsert: true }
-    );
+    )
 
     chatFind
       ? res.json({ msg: 'chat succesfully modified' })
@@ -134,13 +146,13 @@ const deleteChat = async (req, res, next) => {
   try {
     const { id } = req.params
 
-    const del = await Chat.deleteOne(
-      {
-        _id: id,
-      }
-    );
+    const del = await Chat.deleteOne({
+      _id: id,
+    })
 
-    del.deletedCount > 0 ? res.json({msg: "Chat succesfully deleted"}) : res.status(400).json({msg: "doesn't exist any Chat with this id"})
+    del.deletedCount > 0
+      ? res.json({ msg: 'Chat succesfully deleted' })
+      : res.status(400).json({ msg: "doesn't exist any Chat with this id" })
   } catch (error) {
     next(error)
   }
