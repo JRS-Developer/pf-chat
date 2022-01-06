@@ -9,12 +9,11 @@ const MessageSchema = new Schema(
       required: [true, 'chat_id is required'],
     },
     user: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
+      type: String,
       required: [true, 'user_id is required'],
     },
     message: {
-      type: Object,
+      type: String,
       required: [true, 'message is required'],
     },
     parent: {
@@ -27,9 +26,9 @@ const MessageSchema = new Schema(
   },
   {
     timestamps: true,
-    versionKey: false
+    versionKey: false,
   }
-);
+)
 
 // MessageSchema.virtual('id').get(() => {
 //   return this._id.toHexString()
