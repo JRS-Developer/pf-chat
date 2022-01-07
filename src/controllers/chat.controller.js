@@ -1,4 +1,5 @@
 const Chat = require('../models/Chat')
+const onlineUsers = require('../lib/onlineUsers')
 // const Materia = require('../models/Materia')
 // const Clase = require('../models/Clases')
 // const User = require('../models/User')
@@ -52,7 +53,12 @@ const getChatByclase = async (req, res, next) => {
       clase: { $all: clase },
     }
 
-    const chat = await Chat.findOne(query)
+    let chat = await Chat.findOne(query)
+
+    chat = chat.toJSON()
+    // Le añado los usuarios en linea para mostrar en el chat
+    chat.onlineUsers = Object.values(onlineUsers)
+
     chat
       ? res.json(chat)
       : res.status(400).json({
