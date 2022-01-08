@@ -42,10 +42,6 @@ const getChatByclase = async (req, res, next) => {
   try {
     const { materia_id, clase_id, school_id, ciclo_lectivo_id } = req.query
 
-    // const { error } = getChatByclaseSchema.validate(req.params)
-
-    // if (error) return res.status(400).json({ msg: error.details[0].message })
-
     // Uno los params en un array clase para buscar en el modelo
     const clase = [materia_id, clase_id, school_id, ciclo_lectivo_id]
 
@@ -55,14 +51,16 @@ const getChatByclase = async (req, res, next) => {
 
     let chat = await Chat.findOne(query)
 
-    chat = chat.toJSON()
-    // Le añado los usuarios en linea para mostrar en el chat
-    chat.onlineUsers = Object.values(onlineUsers)
+    if (chat) {
+      chat = chat.toJSON()
+      // Le añado los usuarios en linea para mostrar en el chat
+      chat.onlineUsers = Object.values(onlineUsers)
+    }
 
     chat
       ? res.json(chat)
-      : res.status(400).json({
-          msg: "Doesn't exist a chat from this materia",
+      : res.status(404).json({
+          msg: "The chat doesn't exist",
         })
   } catch (error) {
     next(error)
@@ -74,16 +72,20 @@ const createChat = async (req, res, next) => {
     const { description, clase /* , participants */ } = req.body
     const data = { description, clase /* , participants */ }
 
-    // const { error } = createChatSchema.validate(data)
-
-    // if (error) return res.status(400).json({ msg: error.details[0].message })
+    // Reviso que el chat no exista
+    if (await Chat.exists({ clase: { $all: clase } }))
+      return res.status(400).json({ error: 'The chat already exists' })
 
     const newChat = new Chat(data)
 
-    newChat.save((err) => {
+    newChat.save((err, data) => {
       if (err) return res.status(400).json(err)
 
-      return res.json({ msg: 'chat succesfully created' })
+      // Retorno el chat creado
+      let chat = data.toJSON()
+      chat.onlineUsers = Object.values(onlineUsers)
+
+      res.json(chat)
     })
   } catch (error) {
     next(error)
