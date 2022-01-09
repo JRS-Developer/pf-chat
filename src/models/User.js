@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const { Schema, model } = mongoose;
-const unique = require('mongoose-unique-validator');
+const mongoose = require('mongoose')
+const { Schema, model } = mongoose
+const unique = require('mongoose-unique-validator')
 
 const UserSchema = new Schema(
   {
@@ -18,9 +18,8 @@ const UserSchema = new Schema(
       type: String,
       match: [/.+\@.+\..+/, 'please put a valid username format'],
       required: [true, 'email is required'],
-      unique: true
-    }
-    ,
+      unique: true,
+    },
     fullname: {
       type: String,
       required: [true, 'fullname is required'],
@@ -31,7 +30,7 @@ const UserSchema = new Schema(
     rol: {
       type: Schema.Types.ObjectId,
       ref: 'Roles',
-      required: [true, 'rol_id is required']
+      required: [true, 'rol_id is required'],
     },
     avatar: {
       type: String,
@@ -39,25 +38,25 @@ const UserSchema = new Schema(
     },
     state: {
       type: Boolean,
-      default: false
+      default: false,
     },
   },
   {
     versionKey: false,
   }
-);
+)
 
-UserSchema.plugin(unique);
+UserSchema.plugin(unique)
 UserSchema.path('avatar').validate((val) => {
-    const urlRegex = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/;
+  const urlRegex =
+    /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/
 
-    if(urlRegex.test(path));
-
-}, 'Invalid URL.');
+  if (urlRegex.test(path));
+}, 'Invalid URL.')
 
 function arrayLimit(val) {
-  return val.length > 0;
-};
+  return val.length > 0
+}
 
 // UserSchema.virtual('id').get(() => {
 //   return this._id.toHexString()
@@ -67,4 +66,4 @@ function arrayLimit(val) {
 //   virtuals: true
 // });
 
-module.exports = model('User', UserSchema);
+module.exports = model('User', UserSchema)

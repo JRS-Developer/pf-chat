@@ -19,7 +19,7 @@ app.use(
 )
 app.use(helmet())
 app.use('/api', routes)
-app.use(notFound);
-app.use(error);
+app.use(notFound)
+app.use(error)
 
 module.exports = app
