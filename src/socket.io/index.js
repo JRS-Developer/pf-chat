@@ -1,15 +1,14 @@
 const config = require('../lib/config')
 //traemos express para poder usarlo
-const express = require('express')
-const app = express()
+const app = require('../app')
 //conectamos express a http para poder luego conectar al webSocket server
 const http = require('http')
 const server = http.createServer(app)
 const onlineUsers = require('../lib/onlineUsers')
 
 //conectamos el server con la webSocket
-const socket = require('socket.io')
-const io = socket(server, {
+const { Server } = require('socket.io')
+const io = new Server(server, {
   cors: {
     origin: config.cors,
     methods: ['GET', 'POST'],
