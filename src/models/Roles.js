@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const { Schema, model } = mongoose;
-const unique = require('mongoose-unique-validator');
+const mongoose = require('mongoose')
+const { Schema, model } = mongoose
+const unique = require('mongoose-unique-validator')
 
 const RoleSchema = new Schema(
   {
@@ -22,9 +22,9 @@ const RoleSchema = new Schema(
   {
     versionKey: false,
   }
-);
+)
 
-RoleSchema.plugin(unique);
+RoleSchema.plugin(unique)
 
 // RoleSchema.virtual('id').get(() => {
 //   return this._id.toHexString()
@@ -34,4 +34,4 @@ RoleSchema.plugin(unique);
 //   virtuals: true
 // });
 
-module.exports = model('Roles', RoleSchema);
+module.exports = model('Roles', RoleSchema)

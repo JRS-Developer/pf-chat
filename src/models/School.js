@@ -1,12 +1,12 @@
-const mongoose = require('mongoose');
-const { Schema, model } = mongoose;
-const unique = require('mongoose-unique-validator');
+const mongoose = require('mongoose')
+const { Schema, model } = mongoose
+const unique = require('mongoose-unique-validator')
 
 const SchoolSchema = new Schema(
   {
     id: {
       type: String,
-      required: [true, "school_id is required"],
+      required: [true, 'school_id is required'],
       unique: true,
     },
     nombre: {
@@ -23,9 +23,9 @@ const SchoolSchema = new Schema(
   {
     versionKey: false,
   }
-);
+)
 
-SchoolSchema.plugin(unique);
+SchoolSchema.plugin(unique)
 
 // SchoolSchema.virtual('id').get(() => {
 //   return this._id.toHexString()
@@ -35,4 +35,4 @@ SchoolSchema.plugin(unique);
 //   virtuals: true
 // });
 
-module.exports = model('School', SchoolSchema);
+module.exports = model('School', SchoolSchema)

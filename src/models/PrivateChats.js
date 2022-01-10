@@ -1,31 +1,33 @@
-const mongoose = require('mongoose');
-const { Schema, model } = mongoose;
-const unique = require('mongoose-unique-validator');
+const mongoose = require('mongoose')
+const { Schema, model } = mongoose
+const unique = require('mongoose-unique-validator')
 
-const PrivateChatsSchema = new Schema({
-
+const PrivateChatsSchema = new Schema(
+  {
     members: {
-        type:[{
+      type: [
+        {
           type: Schema.Types.ObjectId,
           ref: 'User',
           unique: true,
-        }],
-        required: [true, "members are required"],
-        validate: [arrayLimit, 'members must be exactly 2 users'],
-        unique: true,
-      }
+        },
+      ],
+      required: [true, 'members are required'],
+      validate: [arrayLimit, 'members must be exactly 2 users'],
+      unique: true,
+    },
   },
   {
     timestamps: true,
-    versionKey: false
+    versionKey: false,
   }
-);
+)
 
-PrivateChatsSchema.plugin(unique);
+PrivateChatsSchema.plugin(unique)
 
-function arrayLimit (val) {
-  return val.length >= 2;
-};
+function arrayLimit(val) {
+  return val.length >= 2
+}
 
 // PrivateChatsSchema.virtual('id').get(() => {
 //   return this._id.toHexString()

@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const { Schema, model } = mongoose;
+const mongoose = require('mongoose')
+const { Schema, model } = mongoose
 //const unique = require('mongoose-unique-validator');
 
 const MateriaSchema = new Schema(
@@ -14,7 +14,7 @@ const MateriaSchema = new Schema(
         {
           type: Schema.Types.ObjectId,
           ref: 'Clases',
-        }
+        },
       ],
     },
     nombre: {
@@ -31,7 +31,7 @@ const MateriaSchema = new Schema(
   {
     versionKey: false,
   }
-);
+)
 
 // MateriaSchema.plugin(unique);
 
