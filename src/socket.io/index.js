@@ -15,21 +15,36 @@ const io = new Server(server, {
   },
 })
 
+function disconnect(socket){
+  const copy = { ...onlineUsers }
+
+  delete onlineUsers[socket.id]
+
+  socket.broadcast.emit('offline', copy[socket.id])
+
+}
+
 //inicializamos socket.io
 io.on('connection', (socket) => {
   // Se usa go-online para agregar al usuario a la lista de usuarios online, y se usa disconnect para eliminarlo
   socket.on('go-online', (userId) => {
     onlineUsers[socket.id] = userId
-
     socket.broadcast.emit('online', userId)
   })
 
-  socket.on('disconnect', () => {
+  socket.on('go-offline',(userId)=>{
     const copy = { ...onlineUsers }
+    
+    const user = Object.keys(onlineUsers).filter((key)=> onlineUsers[key] === userId)[0]
 
-    delete onlineUsers[socket.id]
-
+    delete onlineUsers[user]
+    
     socket.broadcast.emit('offline', copy[socket.id])
+
+  })
+
+  socket.on('disconnect', () => {
+    disconnect(socket)
   })
 
   // Se usa join para agregar el usuario a la sala, y se usa leave para eliminarlo
