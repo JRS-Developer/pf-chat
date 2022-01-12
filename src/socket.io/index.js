@@ -15,13 +15,12 @@ const io = new Server(server, {
   },
 })
 
-function disconnect(socket){
+function disconnect(socket) {
   const copy = { ...onlineUsers }
 
   delete onlineUsers[socket.id]
 
   socket.broadcast.emit('offline', copy[socket.id])
-
 }
 
 //inicializamos socket.io
@@ -32,15 +31,16 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('online', userId)
   })
 
-  socket.on('go-offline',(userId)=>{
+  socket.on('go-offline', (userId) => {
     const copy = { ...onlineUsers }
-    
-    const user = Object.keys(onlineUsers).filter((key)=> onlineUsers[key] === userId)[0]
+
+    const user = Object.keys(onlineUsers).filter(
+      (key) => onlineUsers[key] === userId
+    )[0]
 
     delete onlineUsers[user]
-    
-    socket.broadcast.emit('offline', copy[socket.id])
 
+    socket.broadcast.emit('offline', copy[socket.id])
   })
 
   socket.on('disconnect', () => {
